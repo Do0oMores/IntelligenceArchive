@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerPlayer;
 import top.mores.intelligencearchive.Intelligencearchive;
 import top.mores.intelligencearchive.application.result.ResolveArchiveContentResult;
 import top.mores.intelligencearchive.common.dto.ResolvedArchiveContentDTO;
+import top.mores.intelligencearchive.common.model.investigation.IntelDiscoveryStatus;
 import top.mores.intelligencearchive.network.ArchiveNetwork;
 import top.mores.intelligencearchive.network.packet.RequestResolvedArchiveContentPacket;
 import top.mores.intelligencearchive.network.packet.ResponseResolvedArchiveContentPacket;
@@ -53,7 +54,8 @@ public final class ResolvedArchiveContentServerHandler {
                 ));
                 return;
             }
-            ResolveArchiveContentResult result = runtimeContext.get()
+            ArchiveRuntimeContext context = runtimeContext.get();
+            ResolveArchiveContentResult result = context
                     .getResolveArchiveContentUseCase()
                     .execute(player.getUUID(), documentId);
             if (!result.success()) {
@@ -68,6 +70,11 @@ public final class ResolvedArchiveContentServerHandler {
             ResolvedArchiveContentDTO dto = ResolvedArchiveContentMapper.toDto(
                     result.content().orElseThrow()
             );
+            // 成功阅读详情后由服务端推进 READ；客户端不能自行提交阅读状态。
+            if (context.getInvestigationService().getPlayerState(player.getUUID()).statusOf(documentId)
+                    == IntelDiscoveryStatus.DISCOVERED) {
+                context.getReadArchiveUseCase().execute(player.getUUID(), documentId);
+            }
             ArchiveNetwork.sendToPlayer(player, ResponseResolvedArchiveContentPacket.success(dto));
             Intelligencearchive.LOGGER.info(
                     "[IntelligenceArchive] Sent resolved archive content {} to {}",

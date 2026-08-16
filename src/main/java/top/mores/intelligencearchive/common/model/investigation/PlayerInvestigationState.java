@@ -18,14 +18,11 @@ import java.util.UUID;
  */
 public record PlayerInvestigationState(
         UUID playerId,
-        List<IntelDiscoveryRecord> discoveredIntels,
-        InvestigationLevel investigationLevel
+        List<IntelDiscoveryRecord> discoveredIntels
 ) {
     public PlayerInvestigationState {
         playerId = Objects.requireNonNull(playerId, "playerId 不能为 null");
         Objects.requireNonNull(discoveredIntels, "discoveredIntels 不能为 null");
-        investigationLevel = Objects.requireNonNull(investigationLevel, "investigationLevel 不能为 null");
-
         Set<String> uniqueIntelIds = new HashSet<>();
         for (IntelDiscoveryRecord record : discoveredIntels) {
             IntelDiscoveryRecord validRecord = Objects.requireNonNull(record, "discoveredIntels 不能包含 null");

@@ -1,40 +1,33 @@
 package top.mores.intelligencearchive.server.service;
 
 import top.mores.intelligencearchive.common.model.ArchiveDocument;
-import top.mores.intelligencearchive.common.model.ArchiveDocumentType;
-import top.mores.intelligencearchive.common.model.ArchiveMetadata;
-import top.mores.intelligencearchive.common.model.ArchiveSecurityLevel;
 import top.mores.intelligencearchive.common.model.IntelEdge;
 import top.mores.intelligencearchive.common.model.IntelNode;
 import top.mores.intelligencearchive.common.service.IntelRepository;
 import top.mores.intelligencearchive.common.service.IntelService;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
- * Phase 2-A 使用的最小服务实现。
+ * IntelRepository 的最小查询服务实现。
  *
- * <p>默认构造器使用私有内存 Repository 并预载测试档案；注入构造器允许未来在不改变
- * 调用方的情况下替换为数据库 Repository。本实现不保存玩家权限或解锁状态。</p>
+ * <p>默认构造器提供空的内存存储，保证尚未接入世界数据源时服务端仍可安全启动。
+ * 正式数据源通过注入构造器提供。</p>
  */
 public final class SimpleIntelService implements IntelService {
-    public static final String TEST_DOCUMENT_ID = "document.case.test_001";
-
     private final IntelRepository repository;
 
-    /** 创建带有 CASE-TEST-001 测试数据的内存服务。 */
+    /** 创建不包含任何固定内容的内存服务。 */
     public SimpleIntelService() {
-        this(createTestRepository());
+        this(new InMemoryIntelRepository());
     }
 
-    /** 创建使用指定 Repository 的服务，不隐式写入测试数据。 */
+    /** 创建使用指定 Repository 的服务，不隐式写入固定内容。 */
     public SimpleIntelService(IntelRepository repository) {
         this.repository = Objects.requireNonNull(repository, "repository 不能为 null");
     }
@@ -59,24 +52,6 @@ public final class SimpleIntelService implements IntelService {
         return findDocumentById(documentId).isPresent();
     }
 
-    private static IntelRepository createTestRepository() {
-        InMemoryIntelRepository repository = new InMemoryIntelRepository();
-        repository.saveDocument(new ArchiveDocument(
-                TEST_DOCUMENT_ID,
-                "测试档案",
-                ArchiveDocumentType.DOCUMENT,
-                "IntelligenceArchive Archive Domain Core 测试档案。",
-                "archive/case/test001.md",
-                new ArchiveMetadata(
-                        Instant.parse("2026-08-16T00:00:00Z"),
-                        "IntelligenceArchive",
-                        ArchiveSecurityLevel.PUBLIC
-                ),
-                Set.of()
-        ));
-        return repository;
-    }
-
     private static String requireQueryId(String value, String fieldName) {
         Objects.requireNonNull(value, fieldName + " 不能为 null");
         if (value.isBlank()) {
@@ -86,7 +61,7 @@ public final class SimpleIntelService implements IntelService {
     }
 
     /**
-     * 只服务于 Phase 2-A 默认构造器的内存适配器。
+     * 只服务于默认安全启动路径的空内存适配器。
      * Map 模拟持久化存储，但被 Repository 接口封装，不向 Service 调用方暴露。
      */
     private static final class InMemoryIntelRepository implements IntelRepository {

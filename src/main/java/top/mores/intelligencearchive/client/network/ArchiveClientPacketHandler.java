@@ -3,9 +3,11 @@ package top.mores.intelligencearchive.client.network;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import top.mores.intelligencearchive.client.ArchiveClient;
-import top.mores.intelligencearchive.network.packet.ArchiveTestResponsePacket;
 import top.mores.intelligencearchive.network.packet.ResponseArchiveDocumentPacket;
 import top.mores.intelligencearchive.network.packet.ResponseResolvedArchiveContentPacket;
+import top.mores.intelligencearchive.network.packet.ResponseArchiveIndexPacket;
+import top.mores.intelligencearchive.network.packet.ResponseIntelNavigationPacket;
+import top.mores.intelligencearchive.network.packet.ResponseInvestigationViewPacket;
 
 /**
  * 客户端 Packet 分发边界。
@@ -16,15 +18,23 @@ public final class ArchiveClientPacketHandler {
     private ArchiveClientPacketHandler() {
     }
 
-    public static void handleTestResponse(ArchiveTestResponsePacket packet) {
-        ArchiveClient.receiveTestResponse(packet);
-    }
-
     public static void handleArchiveDocumentResponse(ResponseArchiveDocumentPacket packet) {
         ArchiveClient.receiveArchiveDocumentResponse(packet);
     }
 
     public static void handleResolvedArchiveContentResponse(ResponseResolvedArchiveContentPacket packet) {
         ArchiveClient.receiveResolvedArchiveContentResponse(packet);
+    }
+
+    public static void handleArchiveIndexResponse(ResponseArchiveIndexPacket packet) {
+        ArchiveClient.receiveArchiveIndexResponse(packet);
+    }
+
+    public static void handleIntelNavigationResponse(ResponseIntelNavigationPacket packet) {
+        ArchiveClient.receiveIntelNavigationResponse(packet);
+    }
+
+    public static void handleInvestigationViewResponse(ResponseInvestigationViewPacket packet) {
+        ArchiveClient.receiveInvestigationViewResponse(packet);
     }
 }

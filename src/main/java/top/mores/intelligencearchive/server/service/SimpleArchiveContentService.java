@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.List;
 
 /**
  * Phase 3-C-1 的不可变内存 ContentService。
@@ -40,5 +41,10 @@ public final class SimpleArchiveContentService implements ArchiveContentService 
             throw new IllegalArgumentException("documentId 不能为空");
         }
         return Optional.ofNullable(contentsByDocumentId.get(documentId));
+    }
+
+    @Override
+    public List<String> findDocumentIds() {
+        return contentsByDocumentId.keySet().stream().sorted().toList();
     }
 }

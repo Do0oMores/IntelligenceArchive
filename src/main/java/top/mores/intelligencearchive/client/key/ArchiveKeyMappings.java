@@ -18,6 +18,12 @@ public final class ArchiveKeyMappings {
             GLFW.GLFW_KEY_J,
             "key.categories.intelligencearchive"
     );
+    public static final KeyMapping OPEN_INVESTIGATION = new KeyMapping(
+            "key.intelligencearchive.open_investigation",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_K,
+            "key.categories.intelligencearchive"
+    );
 
     private ArchiveKeyMappings() {
     }
@@ -25,5 +31,6 @@ public final class ArchiveKeyMappings {
     @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event) {
         event.register(OPEN_ARCHIVE);
+        event.register(OPEN_INVESTIGATION);
     }
 }

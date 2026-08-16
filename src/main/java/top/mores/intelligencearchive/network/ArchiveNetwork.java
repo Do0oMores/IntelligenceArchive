@@ -7,12 +7,16 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import top.mores.intelligencearchive.Intelligencearchive;
-import top.mores.intelligencearchive.network.packet.ArchiveTestRequestPacket;
-import top.mores.intelligencearchive.network.packet.ArchiveTestResponsePacket;
 import top.mores.intelligencearchive.network.packet.RequestArchiveDocumentPacket;
 import top.mores.intelligencearchive.network.packet.RequestResolvedArchiveContentPacket;
 import top.mores.intelligencearchive.network.packet.ResponseArchiveDocumentPacket;
 import top.mores.intelligencearchive.network.packet.ResponseResolvedArchiveContentPacket;
+import top.mores.intelligencearchive.network.packet.RequestArchiveIndexPacket;
+import top.mores.intelligencearchive.network.packet.ResponseArchiveIndexPacket;
+import top.mores.intelligencearchive.network.packet.RequestIntelNavigationPacket;
+import top.mores.intelligencearchive.network.packet.ResponseIntelNavigationPacket;
+import top.mores.intelligencearchive.network.packet.RequestInvestigationViewPacket;
+import top.mores.intelligencearchive.network.packet.ResponseInvestigationViewPacket;
 
 /**
  * IntelligenceArchive 网络层的唯一注册入口。
@@ -21,16 +25,21 @@ import top.mores.intelligencearchive.network.packet.ResponseResolvedArchiveConte
  * 独立 Packet，而不需要引入依赖字符串类型分派的“万能包”。</p>
  */
 public final class ArchiveNetwork {
-    // 新增 resolved-content 消息后协议与旧 Phase 客户端不再对称，必须拒绝误兼容连接。
-    private static final String PROTOCOL_VERSION = "2";
+    // Phase 5-C-2B 扩展调查展示 DTO，必须拒绝仍按旧字段布局解码的客户端。
+    private static final String PROTOCOL_VERSION = "5";
 
     // 显式固定消息 ID，避免重排注册代码时意外破坏线上协议。
-    private static final int TEST_REQUEST_ID = 0;
-    private static final int TEST_RESPONSE_ID = 1;
+    // 0、1 曾用于 Phase 1 通道测试，删除后永久保留，避免重排正式消息 ID。
     private static final int ARCHIVE_DOCUMENT_REQUEST_ID = 2;
     private static final int ARCHIVE_DOCUMENT_RESPONSE_ID = 3;
     private static final int RESOLVED_CONTENT_REQUEST_ID = 4;
     private static final int RESOLVED_CONTENT_RESPONSE_ID = 5;
+    private static final int ARCHIVE_INDEX_REQUEST_ID = 6;
+    private static final int ARCHIVE_INDEX_RESPONSE_ID = 7;
+    private static final int INTEL_NAVIGATION_REQUEST_ID = 8;
+    private static final int INTEL_NAVIGATION_RESPONSE_ID = 9;
+    private static final int INVESTIGATION_VIEW_REQUEST_ID = 10;
+    private static final int INVESTIGATION_VIEW_RESPONSE_ID = 11;
 
     private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(Intelligencearchive.MOD_ID, "main"))
@@ -49,18 +58,6 @@ public final class ArchiveNetwork {
             return;
         }
 
-        CHANNEL.messageBuilder(ArchiveTestRequestPacket.class, TEST_REQUEST_ID, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(ArchiveTestRequestPacket::encode)
-                .decoder(ArchiveTestRequestPacket::decode)
-                .consumerNetworkThread(ArchiveTestRequestPacket::handle)
-                .add();
-
-        CHANNEL.messageBuilder(ArchiveTestResponsePacket.class, TEST_RESPONSE_ID, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(ArchiveTestResponsePacket::encode)
-                .decoder(ArchiveTestResponsePacket::decode)
-                .consumerNetworkThread(ArchiveTestResponsePacket::handle)
-                .add();
-
         CHANNEL.messageBuilder(
                         RequestArchiveDocumentPacket.class,
                         ARCHIVE_DOCUMENT_REQUEST_ID,
@@ -69,6 +66,66 @@ public final class ArchiveNetwork {
                 .encoder(RequestArchiveDocumentPacket::encode)
                 .decoder(RequestArchiveDocumentPacket::decode)
                 .consumerNetworkThread(RequestArchiveDocumentPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        RequestArchiveIndexPacket.class,
+                        ARCHIVE_INDEX_REQUEST_ID,
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .encoder(RequestArchiveIndexPacket::encode)
+                .decoder(RequestArchiveIndexPacket::decode)
+                .consumerNetworkThread(RequestArchiveIndexPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        ResponseArchiveIndexPacket.class,
+                        ARCHIVE_INDEX_RESPONSE_ID,
+                        NetworkDirection.PLAY_TO_CLIENT
+                )
+                .encoder(ResponseArchiveIndexPacket::encode)
+                .decoder(ResponseArchiveIndexPacket::decode)
+                .consumerNetworkThread(ResponseArchiveIndexPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        RequestIntelNavigationPacket.class,
+                        INTEL_NAVIGATION_REQUEST_ID,
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .encoder(RequestIntelNavigationPacket::encode)
+                .decoder(RequestIntelNavigationPacket::decode)
+                .consumerNetworkThread(RequestIntelNavigationPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        ResponseIntelNavigationPacket.class,
+                        INTEL_NAVIGATION_RESPONSE_ID,
+                        NetworkDirection.PLAY_TO_CLIENT
+                )
+                .encoder(ResponseIntelNavigationPacket::encode)
+                .decoder(ResponseIntelNavigationPacket::decode)
+                .consumerNetworkThread(ResponseIntelNavigationPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        RequestInvestigationViewPacket.class,
+                        INVESTIGATION_VIEW_REQUEST_ID,
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .encoder(RequestInvestigationViewPacket::encode)
+                .decoder(RequestInvestigationViewPacket::decode)
+                .consumerNetworkThread(RequestInvestigationViewPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(
+                        ResponseInvestigationViewPacket.class,
+                        INVESTIGATION_VIEW_RESPONSE_ID,
+                        NetworkDirection.PLAY_TO_CLIENT
+                )
+                .encoder(ResponseInvestigationViewPacket::encode)
+                .decoder(ResponseInvestigationViewPacket::decode)
+                .consumerNetworkThread(ResponseInvestigationViewPacket::handle)
                 .add();
 
         CHANNEL.messageBuilder(
@@ -105,16 +162,6 @@ public final class ArchiveNetwork {
         Intelligencearchive.LOGGER.info("[IntelligenceArchive] Network channel initialized");
     }
 
-    /** 仅供客户端入口调用，发送的 requestId 只是关联请求，不代表任何业务结果。 */
-    public static void sendToServer(ArchiveTestRequestPacket packet) {
-        CHANNEL.sendToServer(packet);
-    }
-
-    /** 服务端只把响应发回发起请求的玩家。 */
-    public static void sendToPlayer(ServerPlayer player, ArchiveTestResponsePacket packet) {
-        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
-    }
-
     /** 客户端请求指定 ID 的档案；请求不携带任何授权或解锁结论。 */
     public static void sendToServer(RequestArchiveDocumentPacket packet) {
         CHANNEL.sendToServer(packet);
@@ -132,6 +179,30 @@ public final class ArchiveNetwork {
 
     /** 只向请求玩家发送已经解析的安全内容 DTO。 */
     public static void sendToPlayer(ServerPlayer player, ResponseResolvedArchiveContentPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToServer(RequestArchiveIndexPacket packet) {
+        CHANNEL.sendToServer(packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, ResponseArchiveIndexPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToServer(RequestIntelNavigationPacket packet) {
+        CHANNEL.sendToServer(packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, ResponseIntelNavigationPacket packet) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToServer(RequestInvestigationViewPacket packet) {
+        CHANNEL.sendToServer(packet);
+    }
+
+    public static void sendToPlayer(ServerPlayer player, ResponseInvestigationViewPacket packet) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 }

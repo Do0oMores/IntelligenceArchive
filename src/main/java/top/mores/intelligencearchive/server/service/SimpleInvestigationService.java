@@ -2,7 +2,6 @@ package top.mores.intelligencearchive.server.service;
 
 import top.mores.intelligencearchive.common.model.investigation.IntelDiscoveryRecord;
 import top.mores.intelligencearchive.common.model.investigation.IntelDiscoveryStatus;
-import top.mores.intelligencearchive.common.model.investigation.InvestigationLevel;
 import top.mores.intelligencearchive.common.model.investigation.PlayerInvestigationState;
 import top.mores.intelligencearchive.common.service.InvestigationService;
 
@@ -124,11 +123,11 @@ public final class SimpleInvestigationService implements InvestigationService {
         if (!replaced) {
             records.add(replacement);
         }
-        return new PlayerInvestigationState(state.playerId(), records, state.investigationLevel());
+        return new PlayerInvestigationState(state.playerId(), records);
     }
 
     private static PlayerInvestigationState createEmptyState(UUID playerId) {
-        return new PlayerInvestigationState(playerId, List.of(), InvestigationLevel.NOVICE);
+        return new PlayerInvestigationState(playerId, List.of());
     }
 
     private static UUID requirePlayerId(UUID playerId) {

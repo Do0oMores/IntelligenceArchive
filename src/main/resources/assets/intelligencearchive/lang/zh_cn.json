@@ -1,4 +1,10 @@
 {
   "key.intelligencearchive.open_archive": "打开情报档案",
-  "key.categories.intelligencearchive": "情报档案"
+  "key.intelligencearchive.open_investigation": "打开调查终端",
+  "key.categories.intelligencearchive": "情报档案",
+  "gui.investigation.title":"调查终端",
+  "gui.investigation.case":"案件档案",
+  "gui.investigation.clues":"线索",
+  "gui.investigation.timeline":"事件时间线",
+  "gui.investigation.close":"关闭"
 }

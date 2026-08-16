@@ -2,7 +2,7 @@ package top.mores.intelligencearchive.common.content.loader;
 
 import java.util.Objects;
 
-/** 测试、工具或内存内容提供者使用的不可变字符串 Source。 */
+/** 由已读取的字符串内容构成的不可变 Source。 */
 public record StringArchiveContentSource(
         String contentId,
         String documentId,

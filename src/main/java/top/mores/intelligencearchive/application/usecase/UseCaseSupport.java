@@ -4,7 +4,7 @@ import top.mores.intelligencearchive.common.event.ArchiveEvent;
 import top.mores.intelligencearchive.common.event.DomainEventPublisher;
 import top.mores.intelligencearchive.common.service.IntelService;
 
-/** 应用用例共享的输入和世界对象检查，不包含状态或存储。 */
+/** 应用用例共享的最小输入、世界对象与外围事件辅助，不包含状态或存储。 */
 final class UseCaseSupport {
     private UseCaseSupport() {
     }

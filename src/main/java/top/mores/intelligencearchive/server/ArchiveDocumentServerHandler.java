@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerPlayer;
 import top.mores.intelligencearchive.Intelligencearchive;
 import top.mores.intelligencearchive.common.model.ArchiveDocument;
 import top.mores.intelligencearchive.common.service.IntelService;
+import top.mores.intelligencearchive.common.service.InvestigationService;
 import top.mores.intelligencearchive.network.ArchiveNetwork;
 import top.mores.intelligencearchive.network.packet.RequestArchiveDocumentPacket;
 import top.mores.intelligencearchive.network.packet.ResponseArchiveDocumentPacket;
@@ -48,7 +49,9 @@ public final class ArchiveDocumentServerHandler {
 
             ResponseArchiveDocumentPacket response = createResponse(
                     documentId,
-                    runtimeContext.get().getIntelService()
+                    player.getUUID(),
+                    runtimeContext.get().getIntelService(),
+                    runtimeContext.get().getInvestigationService()
             );
             if (isValidDocumentId(documentId)) {
                 Intelligencearchive.LOGGER.info(
@@ -72,9 +75,19 @@ public final class ArchiveDocumentServerHandler {
     }
 
     /** 包可见方法用于验证“请求 -> Service -> Mapper -> Response”业务链。 */
-    static ResponseArchiveDocumentPacket createResponse(String documentId, IntelService intelService) {
+    static ResponseArchiveDocumentPacket createResponse(
+            String documentId,
+            java.util.UUID playerId,
+            IntelService intelService,
+            InvestigationService investigationService
+    ) {
         if (!isValidDocumentId(documentId)) {
             return ResponseArchiveDocumentPacket.failure(safeResponseId(documentId), "Invalid document id.");
+        }
+
+        // 不区分“未发现”和“不存在”，避免元数据接口成为枚举世界档案的旁路。
+        if (!investigationService.hasDiscovered(playerId, documentId)) {
+            return ResponseArchiveDocumentPacket.failure(documentId, "Document not found.");
         }
 
         Optional<ArchiveDocument> document = intelService.findDocumentById(documentId);

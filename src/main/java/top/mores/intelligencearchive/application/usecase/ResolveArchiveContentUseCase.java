@@ -8,7 +8,6 @@ import top.mores.intelligencearchive.common.content.resolution.PlayerContentCont
 import top.mores.intelligencearchive.common.content.resolution.ResolvedArchiveContent;
 import top.mores.intelligencearchive.common.content.service.ArchiveContentService;
 import top.mores.intelligencearchive.common.model.investigation.PlayerInvestigationState;
-import top.mores.intelligencearchive.common.service.IntelService;
 import top.mores.intelligencearchive.common.service.InvestigationService;
 
 import java.util.Objects;
@@ -22,18 +21,15 @@ import java.util.UUID;
  * 不直接遍历节点，也不把条件判断交给未来 Renderer。</p>
  */
 public final class ResolveArchiveContentUseCase {
-    private final IntelService intelService;
     private final ArchiveContentService contentService;
     private final InvestigationService investigationService;
     private final ArchiveContentResolver contentResolver;
 
     public ResolveArchiveContentUseCase(
-            IntelService intelService,
             ArchiveContentService contentService,
             InvestigationService investigationService,
             ArchiveContentResolver contentResolver
     ) {
-        this.intelService = Objects.requireNonNull(intelService, "intelService 不能为 null");
         this.contentService = Objects.requireNonNull(contentService, "contentService 不能为 null");
         this.investigationService = Objects.requireNonNull(
                 investigationService,
@@ -51,14 +47,14 @@ public final class ResolveArchiveContentUseCase {
                     "Player ID and document ID are required."
             );
         }
-        if (intelService.findDocumentById(documentId).isEmpty()) {
+        // 索引不是安全边界：即使客户端猜中 ID，详情请求仍必须重新检查玩家认知状态。
+        if (!investigationService.hasDiscovered(playerId, documentId)) {
             return failure(
-                    OperationStatus.INTEL_NOT_FOUND,
+                    OperationStatus.ARCHIVE_NOT_VISIBLE,
                     documentId,
-                    "The requested archive document does not exist."
+                    "The archive document is not visible."
             );
         }
-
         Optional<ArchiveContent> content = contentService.findByDocumentId(documentId);
         if (content.isEmpty()) {
             return failure(
