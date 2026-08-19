@@ -1,5 +1,65 @@
 {
   "key.intelligencearchive.open_archive": "Open Intelligence Archive",
   "key.intelligencearchive.open_investigation": "Open Investigation Terminal",
-  "key.categories.intelligencearchive": "Intelligence Archive"
+  "key.categories.intelligencearchive": "Intelligence Archive",
+  "gui.intelligencearchive.title": "Intelligence Archive",
+  "gui.intelligencearchive.index.title": "Archive Index",
+  "gui.intelligencearchive.index.requesting": "Requesting archive index...",
+  "gui.intelligencearchive.index.empty": "No discovered archives",
+  "gui.intelligencearchive.detail.back": "< Back to Index",
+  "gui.intelligencearchive.retry": "Retry",
+  "gui.intelligencearchive.status.content": "Content Status: %s",
+  "gui.intelligencearchive.status.link": "Link Status: %s",
+  "gui.intelligencearchive.document": "Document ID: %s | Version: %s",
+  "gui.intelligencearchive.tab.case": "Case",
+  "gui.intelligencearchive.tab.intel": "Intel",
+  "gui.intelligencearchive.tab.evidence": "Evidence",
+  "gui.intelligencearchive.tab.clues": "Clues",
+  "gui.intelligencearchive.tab.hypothesis": "Hypothesis",
+  "gui.intelligencearchive.investigation.subtitle": "Player Cognition / Secure View",
+  "gui.intelligencearchive.investigation.title": "Investigation Terminal",
+  "gui.intelligencearchive.investigation.panel.navigation": "ACCESS NODE",
+  "gui.intelligencearchive.investigation.panel.database": "CASE DATABASE",
+  "gui.intelligencearchive.investigation.panel.system": "SYSTEM",
+  "gui.intelligencearchive.investigation.no_records": "No discovered records in this category",
+
+  "gui.intelligencearchive.investigation.status.idle": "No case selected / awaiting input",
+  "gui.intelligencearchive.investigation.status.requesting": "Synchronizing player investigation data",
+  "gui.intelligencearchive.investigation.status.failed": "Connection error: %s",
+  "gui.intelligencearchive.investigation.status.empty": "No investigation view data returned",
+
+  "gui.intelligencearchive.investigation.case_context": "Case Context",
+  "gui.intelligencearchive.investigation.no_case": "No case selected",
+
+  "gui.intelligencearchive.investigation.status_label": "Status",
+  "gui.intelligencearchive.investigation.records": "Record Index",
+
+  "gui.intelligencearchive.investigation.intel_count": "Intel  %s",
+  "gui.intelligencearchive.investigation.evidence_count": "Evidence  %s",
+  "gui.intelligencearchive.investigation.clue_count": "Clues  %s",
+  "gui.intelligencearchive.investigation.hypothesis_count": "Hypothesis  %s",
+
+  "gui.intelligencearchive.investigation.footer.status": "Status: %s",
+  "gui.intelligencearchive.investigation.footer.idle": "Idle",
+  "gui.intelligencearchive.investigation.footer.requesting": "Requesting",
+  "gui.intelligencearchive.investigation.footer.connected": "Connected",
+  "gui.intelligencearchive.investigation.footer.failed": "Failed",
+
+  "gui.intelligencearchive.investigation.scroll_hint": "Mouse wheel / Arrow keys to scroll",
+
+  "gui.intelligencearchive.investigation.field.case_id": "Case ID",
+  "gui.intelligencearchive.investigation.field.status": "Status",
+  "gui.intelligencearchive.investigation.field.known_intel": "Known Intel",
+  "gui.intelligencearchive.investigation.field.evidence": "Evidence",
+  "gui.intelligencearchive.investigation.field.clues": "Clues",
+  "gui.intelligencearchive.investigation.field.hypotheses": "Hypotheses",
+
+  "gui.intelligencearchive.investigation.field.category": "Category",
+  "gui.intelligencearchive.investigation.field.importance": "Importance",
+  "gui.intelligencearchive.investigation.field.source": "Source",
+  "gui.intelligencearchive.investigation.field.reliability": "Reliability",
+  "gui.intelligencearchive.investigation.field.current_assessment": "Current Assessment",
+  "gui.intelligencearchive.investigation.field.confidence": "Confidence",
+
+  "gui.intelligencearchive.investigation.status.discovered": "Discovered"
 }

@@ -56,7 +56,7 @@ public final class ArchiveScreen extends Screen {
     private String widgetStateKey = "";
 
     public ArchiveScreen() {
-        super(Component.literal("Intelligence Archive"));
+        super(Component.translatable("gui.intelligencearchive.title"));
     }
 
     @Override
@@ -155,7 +155,15 @@ public final class ArchiveScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics);
-        graphics.drawCenteredString(font, "INTELLIGENCE ARCHIVE", width / 2, 12, TEXT_COLOR);
+        graphics.drawCenteredString(
+                font,
+                Component.translatable(
+                        "gui.intelligencearchive.title"
+                ),
+                width / 2,
+                12,
+                TEXT_COLOR
+        );
         if (terminalState.page() == ArchiveTerminalPage.INDEX) {
             renderIndex(graphics);
         } else {
@@ -166,10 +174,20 @@ public final class ArchiveScreen extends Screen {
 
     private void renderIndex(GuiGraphics graphics) {
         ArchiveIndexState.View indexState = ArchiveClient.getArchiveIndexViewState();
-        graphics.drawCenteredString(font, "ARCHIVE INDEX", width / 2, 27, MUTED_COLOR);
+        graphics.drawCenteredString(
+                font,
+                Component.translatable(
+                        "gui.intelligencearchive.index.title"
+                ),
+                width / 2,
+                27,
+                MUTED_COLOR
+        );
         if (indexState.status() == ArchiveIndexLoadStatus.REQUESTING
                 || indexState.status() == ArchiveIndexLoadStatus.IDLE) {
-            graphics.drawCenteredString(font, "REQUESTING ARCHIVE INDEX...", width / 2, 55, MUTED_COLOR);
+            graphics.drawCenteredString(font, Component.translatable(
+                    "gui.intelligencearchive.index.requesting"
+            ), width / 2, 55, MUTED_COLOR);
             return;
         }
         if (indexState.status() == ArchiveIndexLoadStatus.FAILED) {
@@ -177,7 +195,9 @@ public final class ArchiveScreen extends Screen {
             return;
         }
         if (indexState.archives().isEmpty()) {
-            graphics.drawCenteredString(font, "No discovered archives.", width / 2, 55, MUTED_COLOR);
+            graphics.drawCenteredString(font, Component.translatable(
+                    "gui.intelligencearchive.index.empty"
+            ), width / 2, 55, MUTED_COLOR);
             return;
         }
 
